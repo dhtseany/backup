@@ -1,0 +1,15 @@
+[Unit]
+Description=Remote Mount DC1 Public Share
+Requires=systemd-networkd.service
+After=network-online.target
+Wants=network-online.target
+
+[Mount]
+What=//dc1.ttm.local/Public
+Where=/storage/mounts/Public
+Options=credentials=/etc/dc1.smb.pass
+Type=cifs
+TimeoutSec=30
+
+[Install]
+WantedBy=multi-user.target
