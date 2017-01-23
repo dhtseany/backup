@@ -3,4 +3,4 @@ Description=Launches Daily Backup for Remote Shares
 
 [Service]
 Type=simple
-ExecStart=/usr/bin/sh /opt/backup/backup.sh
+ExecStart=/usr/bin/sh /usr/bin/backup/backup
