@@ -1,23 +1,25 @@
 #!/bin/bash
 
-source /etc/backup.conf
+source ./backup.conf
 DATE=$(date)
 DOW=$(date +%u)
 WEEK=$(date +%V)
 MONTH=$(date +"%m")
 YEAR=$(date +"%y")
-echo "Backup Set Run on $DATE" >> /var/log/backup.log
+
+# Daily Log File Clean up; comment this code out to disable
+mv $LOG_DIR/backup.log $LOG_DIR/$YEAR-$MONTH-"$(($DOW-1))"-backup.log
 
 for i in ${BACKUP_DIR[@]}
         do
                 JOB_NAME=${i##*/}
-                EXECUTE=$(tar --ignore-failed-read --listed-incremental=$OUTPUT_DIR/$JOB_NAME-$WEEK.snap -I pigz -cf $OUTPUT_DIR/$JOB_NAME-$YEAR-$MONTH-$DOW.tar.gz $i 3>&1 1>&2 2>&3)
+                EXECUTE=$(find $i -name \* 2>>$LOG_DIR/$JOB_NAME-$YEAR-$MONTH-$DOW.error.log | tar --listed-incremental=$OUTPUT_DIR/$JOB_NAME-$WEEK.snap -I pigz -cf $OUTPUT_DIR/$JOB_NAME-$YEAR-$MONTH-$DOW.tar.gz -T - > $LOG_DIR/$JOB_NAME-$YEAR-$MONTH-$DOW.log 2>>$LOG_DIR/$JOB_NAME-$YEAR-$MONTH-$DOW.error.log)
                         if [ $? = 0 ]
                                 then
-                                        echo "Job name $JOB_NAME processed successfully." >> /var/log/backup.log
-                                        echo "STATUS=0" >> /var/log/backup.log
+                                        echo "Job name $JOB_NAME processed successfully." >> $LOG_DIR/backup.log
+                                        echo "STATUS=0" >> $LOG_DIR/backup.log
                                 else
-                                        echo "Job name $JOB_NAME failed." >> /var/log/backup.log
-                                        echo "STATUS=1" >> /var/log/backup.log
+                                        echo "Job name $JOB_NAME failed." >> $LOG_DIR/backup.log
+                                        echo "STATUS=1" >> $LOG_DIR/backup.log
                         fi
 done

@@ -1,5 +1,5 @@
 [Unit]
-Description=Run Daily Incremental Backup
+Description=Daily Backup for Remote Shares
 
 [Timer]
 OnCalendar=*-*-* 23:00:00
