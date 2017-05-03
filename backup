@@ -1,25 +1,42 @@
 #!/bin/bash
 
-source ./backup.conf
+source /etc/backup.conf
+source /usr/bin/backup/email.sh
 DATE=$(date)
 DOW=$(date +%u)
 WEEK=$(date +%V)
 MONTH=$(date +"%m")
 YEAR=$(date +"%y")
 
-# Daily Log File Clean up; comment this code out to disable
+# Daily Log File clean up rotation to prevent failing RMM Daily Safety Checks.
+# Comment out the next file to disable.
 mv $LOG_DIR/backup.log $LOG_DIR/$YEAR-$MONTH-"$(($DOW-1))"-backup.log
 
-for i in ${BACKUP_DIR[@]}
+for r in ${BACKUP_DIR[@]}
         do
-                JOB_NAME=${i##*/}
-                EXECUTE=$(find $i -name \* 2>>$LOG_DIR/$JOB_NAME-$YEAR-$MONTH-$DOW.error.log | tar --listed-incremental=$OUTPUT_DIR/$JOB_NAME-$WEEK.snap -I pigz -cf $OUTPUT_DIR/$JOB_NAME-$YEAR-$MONTH-$DOW.tar.gz -T - > $LOG_DIR/$JOB_NAME-$YEAR-$MONTH-$DOW.log 2>>$LOG_DIR/$JOB_NAME-$YEAR-$MONTH-$DOW.error.log)
+                JOB_NAME=${r##*/}
+                EXECUTE=$(find $r -name \* 2>>$LOG_DIR/$JOB_NAME-$YEAR-$MONTH-$DOW.error.log | tar --listed-incremental=$OUTPUT_DIR/$JOB_NAME-$WEEK.snap -I pigz -cf $OUTPUT_DIR/$JOB_NAME-$YEAR-$MONTH-$DOW.tar.gz -T - -v > $LOG_DIR/$JOB_NAME-$YEAR-$MONTH-$DOW.log 2>>$LOG_DIR/$JOB_NAME-$YEAR-$MONTH-$DOW.error.log)
                         if [ $? = 0 ]
                                 then
                                         echo "Job name $JOB_NAME processed successfully." >> $LOG_DIR/backup.log
                                         echo "STATUS=0" >> $LOG_DIR/backup.log
+                                        jobStatus="completed successfully."
+                                        if [[ $EMAIL_SUPPORT = 'yes' ]]
+                                                then
+                                                        sendResultsEmail                                                                                
+                                                else
+                                                        echo &>/dev/null
+                                        fi
+
                                 else
                                         echo "Job name $JOB_NAME failed." >> $LOG_DIR/backup.log
                                         echo "STATUS=1" >> $LOG_DIR/backup.log
+                                        jobStatus="FAILED."
+                                        if [[ $EMAIL_SUPPORT = 'yes' ]]
+                                                then
+                                                        sendResultsEmail                                                                                
+                                                else
+                                                        echo &>/dev/null
+                                        fi
                         fi
 done
