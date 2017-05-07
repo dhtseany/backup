@@ -9,9 +9,24 @@ WEEK=$(date +%V)
 MONTH=$(date +"%m")
 YEAR=$(date +"%y")
 
+# Check if LOG_DIR exists; if not create it
+if [[ ! -d $LOG_DIR ]]
+        then
+                mkdir -p $LOG_DIR
+        else
+                echo &>/dev/null
+fi
+
 # Daily Log File clean up rotation to prevent failing RMM Daily Safety Checks.
-# Comment out the next file to disable.
-mv $LOG_DIR/backup.log $LOG_DIR/$YEAR-$MONTH-"$(($DOW-1))"-backup.log
+# Comment out the next if statement to disable.
+if [[ -f $LOG_DIR/backup.log ]]
+        then
+                mv $LOG_DIR/backup.log $LOG_DIR/$YEAR-$MONTH-"$(($DOW-1))"-backup.log
+        else    
+                touch $LOG_DIR/backup.log
+fi
+# End Log File rotation
+
 
 for r in ${BACKUP_DIR[@]}
         do

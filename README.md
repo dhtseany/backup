@@ -33,3 +33,6 @@ Change Log:
 v1.2.1
     - Started keeping a change log
     - Improved email report to limit oversized emails and inherint rejection from external mail servers
+v1.2.2
+    - Improved initial checks for existence of LOG_DIR to prevent initial failures during first run
+    - Adjusted how 
