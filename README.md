@@ -28,3 +28,8 @@ To Do:
 2. Create graphical menus for product configuration
 3. Create backup set rotation capabilities.
 4. Add the ability for user to choose rsync instead of tar.
+
+Change Log:
+v1.2.1
+    - Started keeping a change log
+    - Improved email report to limit oversized emails and inherint rejection from external mail servers

@@ -2,6 +2,7 @@
 
 source /etc/backup.conf
 source /usr/bin/backup/email.sh
+
 DATE=$(date)
 DOW=$(date +%u)
 WEEK=$(date +%V)
