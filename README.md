@@ -36,3 +36,6 @@ v1.2.1
 v1.2.2
     - Improved initial checks for existence of LOG_DIR to prevent initial failures during first run
     - Adjusted how 
+
+v1.2.3
+    - Limited results for error log since fix applied in 1.2.1 didn't cover error log

@@ -2,19 +2,18 @@
 
 function prepareResultsEmail() {
 	EMAIL_LOG_LINE_LIMIT_OFFSET=$(("$EMAIL_LOG_LINE_LIMIT"-1))
-	BODY_BUILD=$(sed -n 1,"$EMAIL_LOG_LINE_LIMIT_OFFSET"p $LOG_DIR/$JOB_NAME-$YEAR-$MONTH-$DOW.log)
+	includedFilesLimited=$(sed -n 1,"$EMAIL_LOG_LINE_LIMIT_OFFSET"p $LOG_DIR/$JOB_NAME-$YEAR-$MONTH-$DOW.log)
+	involvedErrorsLimited=$(sed -n 1,"$EMAIL_LOG_LINE_LIMIT_OFFSET"p $LOG_DIR/$JOB_NAME-$YEAR-$MONTH-$DOW.error.log)
 	fileCount=$(wc -l "$LOG_DIR/$JOB_NAME-$YEAR-$MONTH-$DOW.log" | awk '{print $1}')
+	errorCount=$(wc -l "$LOG_DIR/$JOB_NAME-$YEAR-$MONTH-$DOW.error.log" | awk '{print $1}')
 	echo "Backup Job for [$r] $jobStatus"
 	echo "================================================================="
 	echo ""
-	echo "The following errors occured (if any)"
+	echo "A total of [$errorCount] errors occured."
+	echo "See $LOG_DIR/$JOB_NAME-$YEAR-$MONTH-$DOW.error.log for more details."
+	echo "(Displayed results limited to $EMAIL_LOG_LINE_LIMIT lines per your configuration.)"
 	echo "================================================================="
-	declare -a jobErrorsArary
-	readarray jobErrorsArary < $LOG_DIR/$JOB_NAME-$YEAR-$MONTH-$DOW.error.log
-	let x=0
-		while (( ${#jobErrorsArary[@]} > x )); do
-			printf "${jobErrorsArary[x++]}"
-		done
+	echo $involvedErrorsLimited | tr " " "\n"
 	echo "================================================================="
 	echo ""
 	echo ""
@@ -23,7 +22,7 @@ function prepareResultsEmail() {
 	echo "See $LOG_DIR/$JOB_NAME-$YEAR-$MONTH-$DOW.log for more details."
 	echo "(Displayed results limited to $EMAIL_LOG_LINE_LIMIT lines per your configuration.)"
 	echo "================================================================="
-	echo $BODY_BUILD | tr " " "\n"
+	echo $includedFilesLimited | tr " " "\n"
 	echo "================================================================="
 }
 
