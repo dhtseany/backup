@@ -9,6 +9,13 @@ WEEK=$(date +%V)
 MONTH=$(date +"%m")
 YEAR=$(date +"%y")
 
+
+if [[ ("$1" == "test-email") ]];
+    then
+    echo "This is a test email from Backup-1.2-0" | mail -s "Test Email" $EMAIL_TO
+    exit 0
+fi
+
 # Check if LOG_DIR exists; if not create it
 if [[ ! -d $LOG_DIR ]]
         then
