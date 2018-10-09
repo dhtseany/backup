@@ -12,6 +12,7 @@ YEAR=$(date +"%y")
 
 if [[ ("$1" == "test-email") ]];
     then
+        echo "Email will originate from" $EMAIL_FROM
         echo "This is a test email from Backup" | mail -r $EMAIL_FROM -s "Test Email" $EMAIL_TO
         exit 0
 fi
