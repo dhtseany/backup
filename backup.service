@@ -1,5 +1,5 @@
 [Unit]
-Description=Launches Daily Backup for Remote Shares
+Description=Daily Backup for Remote Shares
 
 [Service]
 Type=simple
