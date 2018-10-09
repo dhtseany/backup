@@ -12,8 +12,8 @@ YEAR=$(date +"%y")
 
 if [[ ("$1" == "test-email") ]];
     then
-    echo "This is a test email from Backup" | mail -R $EMAIL_FROM -s "Test Email" $EMAIL_TO
-    exit 0
+        echo "This is a test email from Backup" | mail -r $EMAIL_FROM -s "Test Email" $EMAIL_TO
+        exit 0
 fi
 
 # Check if LOG_DIR exists; if not create it
