@@ -12,7 +12,7 @@ YEAR=$(date +"%y")
 
 if [[ ("$1" == "test-email") ]];
     then
-    echo "This is a test email from Backup-1.2-0" | mail -s "Test Email" $EMAIL_TO
+    echo "This is a test email from Backup" | mail -R $EMAIL_FROM -s "Test Email" $EMAIL_TO
     exit 0
 fi
 
